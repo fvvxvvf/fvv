@@ -1,6 +1,4 @@
-// Advanced security system for admin access
-import { TwilioSMS } from './twilioSMS';
-
+// Simplified admin security system without Twilio
 export interface AdminSession {
   isAuthenticated: boolean;
   sessionToken: string;
@@ -15,7 +13,6 @@ export interface SecurityConfig {
   lockoutDuration: number; // minutes
   sessionTimeout: number; // minutes
   passwordMinLength: number;
-  require2FA: boolean;
 }
 
 export class AdminSecurity {
@@ -23,11 +20,10 @@ export class AdminSecurity {
   private static readonly PASSWORD_KEY = 'fvd_admin_password';
   private static readonly ATTEMPTS_KEY = 'fvd_admin_attempts';
   private static readonly CONFIG: SecurityConfig = {
-    maxAttempts: 3,
+    maxAttempts: 5,
     lockoutDuration: 30,
     sessionTimeout: 60,
-    passwordMinLength: 12,
-    require2FA: true
+    passwordMinLength: 8
   };
 
   // Advanced encryption using Web Crypto API
@@ -206,7 +202,7 @@ export class AdminSecurity {
   }
 
   // Verify password and create session
-  static async verifyPassword(password: string): Promise<{ success: boolean; error?: string; requiresOTP?: boolean }> {
+  static async verifyPassword(password: string): Promise<{ success: boolean; error?: string }> {
     const lockStatus = this.isAccountLocked();
     if (lockStatus.locked) {
       return { 
@@ -228,13 +224,9 @@ export class AdminSecurity {
         // Reset attempts on successful password
         this.setAttemptData(0);
         
-        if (this.CONFIG.require2FA) {
-          return { success: true, requiresOTP: true };
-        } else {
-          // Create session directly if 2FA is disabled
-          const session = this.createSession();
-          return { success: true };
-        }
+        // Create session
+        this.createSession();
+        return { success: true };
       } else {
         // Increment failed attempts
         const attemptData = this.getAttemptData();
@@ -258,103 +250,6 @@ export class AdminSecurity {
       }
     } catch (error) {
       return { success: false, error: 'Authentication failed' };
-    }
-  }
-
-  // Send OTP via SMS (simulated)
-  static async sendOTP(phoneNumber: string): Promise<{ success: boolean; error?: string; otpCode?: string; method?: string }> {
-    // Try to send via Twilio Verify service first
-    try {
-      console.log('🔐 Attempting to send verification code via Twilio Verify...');
-      const twilioResult = await TwilioSMS.sendVerificationCode(phoneNumber);
-      
-      if (twilioResult.success) {
-        console.log(`✅ Verification code sent successfully via Twilio Verify to ${phoneNumber}`);
-        return { 
-          success: true, 
-          method: 'twilio-verify'
-        };
-      } else {
-        console.warn('⚠️ Twilio Verify failed, falling back to demo mode:', twilioResult.error);
-      }
-    } catch (error) {
-      console.warn('⚠️ Twilio Verify error, using demo mode:', error);
-    }
-    
-    // Fallback to demo mode with generated OTP
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    const otpData = {
-      code: otpCode,
-      expiresAt: Date.now() + (5 * 60 * 1000), // 5 minutes
-      phoneNumber: phoneNumber
-    };
-    
-    sessionStorage.setItem('fvd_otp_data', JSON.stringify(otpData));
-    
-    console.log(`🔐 Demo Mode - OTP Code: ${otpCode}`);
-    alert(`Demo Mode: Your OTP code is ${otpCode}\n\n(This would normally be sent via SMS to ${phoneNumber})`);
-    
-    return { 
-      success: true, 
-      otpCode, // Only for demo mode
-      method: 'demo'
-    };
-  }
-
-  // Verify OTP and create session
-  static verifyOTP(inputCode: string): { success: boolean; error?: string } {
-    // First try Twilio Verify service
-    const phoneNumber = '+34677085145'; // Your phone number
-    
-    // Check if we should use Twilio Verify
-    const shouldUseTwilioVerify = !sessionStorage.getItem('fvd_otp_data');
-    
-    if (shouldUseTwilioVerify) {
-      // Use Twilio Verify API to check the code
-      return this.verifyTwilioCode(phoneNumber, inputCode);
-    }
-    
-    // Fallback to demo mode verification
-    try {
-      const otpData = sessionStorage.getItem('fvd_otp_data');
-      if (!otpData) {
-        return { success: false, error: 'No OTP found. Please request a new code.' };
-      }
-
-      const { code, expiresAt } = JSON.parse(otpData);
-      
-      if (Date.now() > expiresAt) {
-        sessionStorage.removeItem('fvd_otp_data');
-        return { success: false, error: 'OTP code has expired. Please request a new code.' };
-      }
-
-      if (inputCode === code) {
-        sessionStorage.removeItem('fvd_otp_data');
-        this.createSession();
-        return { success: true };
-      } else {
-        return { success: false, error: 'Invalid OTP code. Please try again.' };
-      }
-    } catch (error) {
-      return { success: false, error: 'OTP verification failed' };
-    }
-  }
-
-  // Verify code using Twilio Verify API
-  private static async verifyTwilioCode(phoneNumber: string, code: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const result = await TwilioSMS.verifyCode(phoneNumber, code);
-      
-      if (result.success) {
-        this.createSession();
-        return { success: true };
-      } else {
-        return { success: false, error: result.error || 'Invalid verification code' };
-      }
-    } catch (error) {
-      console.error('❌ Twilio verification error:', error);
-      return { success: false, error: 'Verification service unavailable' };
     }
   }
 
@@ -405,119 +300,13 @@ export class AdminSecurity {
   // Logout and clear session
   static logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);
-    sessionStorage.removeItem('fvd_otp_data');
   }
 
   // Reset password functionality
-  static async resetPassword(): Promise<{ success: boolean; error?: string }> {
-    try {
-      // Send reset code via SMS
-      const phoneNumber = '+34677085145'; // Your phone number
-      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Store reset data
-      const resetData = {
-        code: resetCode,
-        expiresAt: Date.now() + (10 * 60 * 1000), // 10 minutes
-        phoneNumber: phoneNumber
-      };
-      
-      sessionStorage.setItem('fvd_reset_data', JSON.stringify(resetData));
-      
-      // Try to send via Twilio first
-      try {
-        const message = `🔐 FV Drones Admin Password Reset
-
-Your password reset code is: ${resetCode}
-
-This code expires in 10 minutes.
-
-If you didn't request this reset, please ignore this message.
-
-- FV Drones Security Team`;
-        
-        const twilioResult = await TwilioSMS.sendSMS(phoneNumber, message);
-        
-        if (twilioResult.success) {
-          console.log(`✅ Password reset code sent via SMS to ${phoneNumber}`);
-          return { success: true };
-        } else {
-          console.warn('⚠️ Twilio SMS failed for password reset, using demo mode');
-        }
-      } catch (error) {
-        console.warn('⚠️ Twilio error for password reset, using demo mode:', error);
-      }
-      
-      // Fallback to demo mode
-      alert(`Password Reset Code: ${resetCode}\n\n(This would normally be sent via SMS to ${phoneNumber})`);
-      return { success: true };
-      
-    } catch (error) {
-      return { success: false, error: 'Failed to send reset code' };
-    }
-  }
-
-  // Verify reset code
-  static verifyResetCode(inputCode: string): { success: boolean; error?: string } {
-    try {
-      const resetData = sessionStorage.getItem('fvd_reset_data');
-      if (!resetData) {
-        return { success: false, error: 'No reset code found. Please request a new reset.' };
-      }
-
-      const { code, expiresAt } = JSON.parse(resetData);
-      
-      if (Date.now() > expiresAt) {
-        sessionStorage.removeItem('fvd_reset_data');
-        return { success: false, error: 'Reset code has expired. Please request a new reset.' };
-      }
-
-      if (inputCode === code) {
-        // Don't remove reset data yet - need it for password change
-        return { success: true };
-      } else {
-        return { success: false, error: 'Invalid reset code. Please try again.' };
-      }
-    } catch (error) {
-      return { success: false, error: 'Reset code verification failed' };
-    }
-  }
-
-  // Complete password reset
-  static async completePasswordReset(newPassword: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      // Verify we have valid reset session
-      const resetData = sessionStorage.getItem('fvd_reset_data');
-      if (!resetData) {
-        return { success: false, error: 'Invalid reset session. Please start over.' };
-      }
-
-      const { expiresAt } = JSON.parse(resetData);
-      if (Date.now() > expiresAt) {
-        sessionStorage.removeItem('fvd_reset_data');
-        return { success: false, error: 'Reset session expired. Please start over.' };
-      }
-
-      // Validate new password
-      const validation = this.validatePasswordStrength(newPassword);
-      if (!validation.isValid) {
-        return { success: false, error: validation.errors.join('. ') };
-      }
-
-      // Set new password
-      const result = await this.setupPassword(newPassword);
-      if (result.success) {
-        // Clean up reset session
-        sessionStorage.removeItem('fvd_reset_data');
-        // Clear any existing admin session
-        this.logout();
-        return { success: true };
-      } else {
-        return { success: false, error: result.error };
-      }
-    } catch (error) {
-      return { success: false, error: 'Failed to reset password' };
-    }
+  static resetPassword(): void {
+    localStorage.removeItem(this.PASSWORD_KEY);
+    localStorage.removeItem(this.ATTEMPTS_KEY);
+    this.logout();
   }
 
   // Security headers and anti-scraping measures

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, LogOut, Package, BarChart3, Users, Settings, AlertTriangle } from 'lucide-react';
+import { Shield, LogOut, Package, BarChart3, Users, Settings, AlertTriangle, Key } from 'lucide-react';
 import { AdminSecurity } from '../utils/adminSecurity';
 import StockAdmin from './StockAdmin';
 
@@ -126,14 +126,43 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
           {activeTab === 'analytics' && (
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics Dashboard</h2>
-              {/* Your analytics cards */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Total Products</h3>
+                  <p className="text-3xl font-bold text-blue-600">9</p>
+                  <p className="text-sm text-blue-700">Active in catalog</p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                  <h3 className="text-lg font-semibold text-green-900 mb-2">In Stock</h3>
+                  <p className="text-3xl font-bold text-green-600">47</p>
+                  <p className="text-sm text-green-700">Units available</p>
+                </div>
+                <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
+                  <h3 className="text-lg font-semibold text-orange-900 mb-2">Reserved</h3>
+                  <p className="text-3xl font-bold text-orange-600">7</p>
+                  <p className="text-sm text-orange-700">Units in checkout</p>
+                </div>
+                <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+                  <h3 className="text-lg font-semibold text-red-900 mb-2">Out of Stock</h3>
+                  <p className="text-3xl font-bold text-red-600">3</p>
+                  <p className="text-sm text-red-700">Products unavailable</p>
+                </div>
+              </div>
             </div>
           )}
 
           {activeTab === 'users' && (
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">User Activity</h2>
-              {/* Your user activity logs */}
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <p className="text-gray-600">User activity tracking would be implemented here in a production environment.</p>
+                <ul className="mt-4 space-y-2 text-sm text-gray-700">
+                  <li>• Page views and navigation patterns</li>
+                  <li>• Product interest and engagement</li>
+                  <li>• Checkout abandonment analysis</li>
+                  <li>• Geographic distribution of visitors</li>
+                </ul>
+              </div>
             </div>
           )}
 
@@ -156,8 +185,8 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
                   <h3 className="text-lg font-semibold text-blue-900 mb-4">Security Features Active</h3>
                   <ul className="space-y-2 text-sm text-blue-800">
-                    <li>✅ 256-bit AES encryption</li>
-                    <li>✅ Two-factor authentication</li>
+                    <li>✅ Password-based authentication</li>
+                    <li>✅ Encrypted password storage</li>
                     <li>✅ Session timeout protection</li>
                     <li>✅ Rate limiting enabled</li>
                     <li>✅ Anti-scraping measures</li>
@@ -173,6 +202,7 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
                     <li>• Don't share admin credentials</li>
                     <li>• Use this panel only on secure networks</li>
                     <li>• Report any suspicious activity immediately</li>
+                    <li>• Change password regularly</li>
                   </ul>
                 </div>
               </div>
@@ -182,7 +212,42 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
           {activeTab === 'settings' && (
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Admin Settings</h2>
-              {/* Your settings UI */}
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <Key className="w-5 h-5 mr-2" />
+                    Password Management
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Change your admin password or reset authentication settings.
+                  </p>
+                  <button
+                    onClick={() => {
+                      const confirmed = confirm('Are you sure you want to reset your password? You will need to set up a new password.');
+                      if (confirmed) {
+                        AdminSecurity.resetPassword();
+                        alert('Password reset. You will be logged out and need to set up a new password.');
+                        handleLogout();
+                      }
+                    }}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Reset Password
+                  </button>
+                </div>
+
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Session Settings</h3>
+                  <p className="text-gray-600 mb-4">
+                    Current session timeout: 60 minutes of inactivity
+                  </p>
+                  <div className="text-sm text-gray-500">
+                    <p>• Sessions automatically expire after 60 minutes of inactivity</p>
+                    <p>• All admin actions are logged for security</p>
+                    <p>• Multiple failed login attempts will lock the account</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
