@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, LogOut, Package, BarChart3, Users, Settings, AlertTriangle, Key } from 'lucide-react';
+import { Shield, LogOut, Package, BarChart3, Users, Settings, AlertTriangle, Key, ArrowLeft } from 'lucide-react';
 import { AdminSecurity } from '../utils/adminSecurity';
 import StockAdmin from './StockAdmin';
+import { StockManager } from '../utils/stockManager';
 
 interface AdminPanelProps {
   onLogout: () => void;
@@ -10,11 +11,13 @@ interface AdminPanelProps {
 const AdminPanel = ({ onLogout }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('stock');
   const [sessionInfo, setSessionInfo] = useState<any>(null);
+  const [stockData, setStockData] = useState<any>({});
 
   useEffect(() => {
     document.body.classList.add('admin-page');
     const session = AdminSecurity.getCurrentSession();
     setSessionInfo(session);
+    loadStockData();
 
     const checkSession = () => {
       if (!AdminSecurity.isAuthenticated()) {
@@ -29,6 +32,43 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
     };
   }, [onLogout]);
 
+  const loadStockData = () => {
+    const data = StockManager.getAllStock();
+    setStockData(data);
+  };
+
+  // Calculate analytics from stock data
+  const getAnalytics = () => {
+    const products = Object.keys(stockData);
+    const totalProducts = products.length;
+    
+    let totalInStock = 0;
+    let totalReserved = 0;
+    let outOfStockCount = 0;
+    
+    products.forEach(productId => {
+      const product = stockData[productId];
+      if (product) {
+        totalInStock += product.inStock;
+        totalReserved += product.reserved;
+        if (product.inStock - product.reserved <= 0) {
+          outOfStockCount++;
+        }
+      }
+    });
+    
+    const availableStock = totalInStock - totalReserved;
+    
+    return {
+      totalProducts,
+      totalInStock,
+      totalReserved,
+      availableStock,
+      outOfStockCount
+    };
+  };
+
+  const analytics = getAnalytics();
   const handleLogout = () => {
     AdminSecurity.logout();
     onLogout();
@@ -58,6 +98,13 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
+              <a 
+                href="/"
+                className="inline-flex items-center text-gray-700 hover:text-red-500 mr-6 transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back to Website
+              </a>
               <Shield className="w-8 h-8 text-red-500 mr-3" />
               <h1 className="text-2xl font-bold text-gray-900">FV Drones Admin</h1>
               <span className="ml-4 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -126,26 +173,68 @@ const AdminPanel = ({ onLogout }: AdminPanelProps) => {
           {activeTab === 'analytics' && (
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics Dashboard</h2>
+              <div className="mb-4">
+                <button
+                  onClick={loadStockData}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                >
+                  Refresh Data
+                </button>
+              </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
                   <h3 className="text-lg font-semibold text-blue-900 mb-2">Total Products</h3>
-                  <p className="text-3xl font-bold text-blue-600">9</p>
+                  <p className="text-3xl font-bold text-blue-600">{analytics.totalProducts}</p>
                   <p className="text-sm text-blue-700">Active in catalog</p>
                 </div>
                 <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                  <h3 className="text-lg font-semibold text-green-900 mb-2">In Stock</h3>
-                  <p className="text-3xl font-bold text-green-600">47</p>
+                  <h3 className="text-lg font-semibold text-green-900 mb-2">Available Stock</h3>
+                  <p className="text-3xl font-bold text-green-600">{analytics.availableStock}</p>
                   <p className="text-sm text-green-700">Units available</p>
                 </div>
                 <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
                   <h3 className="text-lg font-semibold text-orange-900 mb-2">Reserved</h3>
-                  <p className="text-3xl font-bold text-orange-600">7</p>
+                  <p className="text-3xl font-bold text-orange-600">{analytics.totalReserved}</p>
                   <p className="text-sm text-orange-700">Units in checkout</p>
                 </div>
                 <div className="bg-red-50 p-6 rounded-lg border border-red-200">
                   <h3 className="text-lg font-semibold text-red-900 mb-2">Out of Stock</h3>
-                  <p className="text-3xl font-bold text-red-600">3</p>
+                  <p className="text-3xl font-bold text-red-600">{analytics.outOfStockCount}</p>
                   <p className="text-sm text-red-700">Products unavailable</p>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Stock Details by Product</h3>
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Stock</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reserved</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {Object.entries(stockData).map(([productId, data]: [string, any]) => {
+                        const available = data.inStock - data.reserved;
+                        const status = available <= 0 ? 'Out of Stock' : available <= 2 ? 'Low Stock' : 'In Stock';
+                        const statusColor = available <= 0 ? 'text-red-600' : available <= 2 ? 'text-orange-600' : 'text-green-600';
+                        
+                        return (
+                          <tr key={productId}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{productId}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.inStock}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.reserved}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{available}</td>
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${statusColor}`}>{status}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

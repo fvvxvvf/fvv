@@ -51,14 +51,12 @@ const StockAdmin = () => {
       StockManager.updateProductStock(productId, data.inStock, data.reserved);
     });
     setHasChanges(false);
-    alert('Stock levels updated successfully!');
   };
 
   const resetToDefaults = () => {
     StockManager.resetToDefaults();
     loadStockData();
     setShowResetConfirm(false);
-    alert('Stock levels reset to defaults!');
   };
 
   const getAvailable = (productId: string) => {
