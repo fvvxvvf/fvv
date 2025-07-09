@@ -126,11 +126,12 @@ const Investment = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Investment Opportunity
+            Investment Opportunity - Development Stage
           </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Join me in revolutionizing the UAV industry through sustainable innovation. 
-            Be part of the future where environmental responsibility meets cutting-edge technology.
+            Join us in revolutionizing the UAV industry through sustainable innovation. 
+            We're currently in development stage with alpha models available. 
+            <strong className="text-red-600"> Early investors get exclusive access to our technology and future models!</strong>
           </p>
         </div>
 
@@ -158,6 +159,13 @@ const Investment = () => {
               <h3 className="text-3xl font-bold text-gray-900 mb-6">Why Invest in FV Drones?</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
+                  <Award className="h-6 w-6 text-red-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Development Stage Advantage</h4>
+                    <p className="text-gray-700">Get in early while we're developing revolutionary sustainable UAV technology. Alpha models already proving market demand.</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
                   <Target className="h-6 w-6 text-red-500 mt-1 flex-shrink-0" />
                   <div>
                     <h4 className="font-semibold text-gray-900">First-Mover Advantage</h4>
@@ -182,6 +190,9 @@ const Investment = () => {
             </div>
             <div className="bg-gray-900 rounded-xl p-8 text-white">
               <h4 className="text-2xl font-bold mb-4">Current Funding Round</h4>
+              <div className="bg-yellow-600 text-yellow-100 p-3 rounded-lg mb-4">
+                <p className="text-sm font-medium">🚧 Development Stage Funding</p>
+              </div>
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span>Target Amount:</span>
@@ -268,9 +279,10 @@ const Investment = () => {
         {/* Call to Action */}
         <div className="text-center">
           <div className="bg-gray-900 rounded-2xl p-8 text-white">
-            <h3 className="text-2xl font-bold mb-4">Ready to Invest?</h3>
+            <h3 className="text-2xl font-bold mb-4">Ready to Invest in Our Development?</h3>
             <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-              Contact me directly to discuss investment opportunities and get access to detailed business plan and financial projections.
+              Contact us directly to discuss investment opportunities in our development stage. 
+              Get access to detailed business plan, financial projections, and exclusive early investor benefits.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
@@ -278,7 +290,7 @@ const Investment = () => {
                 className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center justify-center space-x-2"
               >
                 <Mail className="w-5 h-5" />
-                <span>Email for Investment</span>
+                <span>Invest in Development</span>
               </a>
               <button 
                 onClick={() => setIsCallRequestOpen(true)}

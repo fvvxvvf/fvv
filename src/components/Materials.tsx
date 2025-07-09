@@ -52,17 +52,23 @@ const Materials = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Revolutionary Materials
+            Revolutionary Materials - In Development
           </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Transforming waste into high-performance UAV components. Each material represents 
-            our commitment to sustainable engineering without compromising operational excellence.
+            We're developing breakthrough sustainable materials that transform waste into high-performance UAV components. 
+            Our alpha models showcase these materials in action, with continuous improvements in development.
           </p>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-3xl mx-auto mb-8">
+            <p className="text-green-800 font-semibold">
+              🌱 <strong>Development Progress:</strong> Our sustainable materials are being refined and optimized. 
+              Alpha buyers get access to current technology plus future improvements!
+            </p>
+          </div>
           <Link 
             to="/materials"
             className="inline-flex items-center bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           >
-            Learn More About Our Materials <ArrowRight className="ml-2 h-5 w-5" />
+            Explore Development Materials <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>
 
@@ -115,16 +121,16 @@ const Materials = () => {
         </div>
 
         <div className="mt-16 bg-gray-900 rounded-2xl p-8 text-white text-center">
-          <h3 className="text-2xl font-bold mb-4">Material Testing & Certification</h3>
+          <h3 className="text-2xl font-bold mb-4">Development & Testing Program</h3>
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-            All materials undergo rigorous testing for durability, weather resistance, and performance 
-            under extreme conditions. Certified for both civilian and professional applications.
+            Our materials are continuously tested and improved during development. 
+            Alpha models use current proven formulations, with ongoing enhancements for final production.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <span className="text-white font-semibold">Impact Tested</span>
-            <span className="text-white font-semibold">Weather Resistant</span>
-            <span className="text-white font-semibold">Flight Certified</span>
-            <span className="text-white font-semibold">Eco-Certified</span>
+            <span className="text-yellow-400 font-semibold">Alpha Stage Testing</span>
+            <span className="text-yellow-400 font-semibold">Continuous Development</span>
+            <span className="text-yellow-400 font-semibold">Performance Proven</span>
+            <span className="text-yellow-400 font-semibold">Eco-Focused</span>
           </div>
         </div>
       </div>

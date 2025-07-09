@@ -336,9 +336,18 @@ const Shop = () => {
 
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">FV Drones Shop</h1>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 max-w-4xl mx-auto">
+            <p className="text-blue-800 font-semibold mb-2">
+              🚧 <strong>Development Stage:</strong> Our drones are currently in alpha phase
+            </p>
+            <p className="text-blue-700 text-sm">
+              Alpha models are fully functional and ready for use. As a thank you for supporting us during development, 
+              <strong> you'll receive the final production model for FREE when it's released!</strong>
+            </p>
+          </div>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Discover our complete range of sustainable UAV technology. From civilian surveillance 
-            to tactical applications, find the perfect drone for your needs.
+            Available alpha models: Airplane UAV, Helicopter, and Quadcopter surveillance drones. 
+            Other models are in development and will be available soon.
           </p>
         </div>
 
@@ -566,10 +575,10 @@ const Shop = () => {
 
         {/* Call to Action */}
         <div className="mt-12 bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Need a Custom Solution?</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Join Our Development Program</h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-            Don't see exactly what you need? Our engineering team can develop custom UAV solutions 
-            tailored to your specific requirements using our sustainable materials.
+            We're actively developing new models and welcome early supporters to join our development program. 
+            Get involved in shaping the future of sustainable UAV technology!
           </p>
           <Link 
             to="/#contact"
@@ -578,7 +587,7 @@ const Shop = () => {
             onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = '#CCCC00'}} 
             onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = '#FFFF00'}}
           >
-            Contact for Custom Project
+            Join Development Program
           </Link>
         </div>
       </div>

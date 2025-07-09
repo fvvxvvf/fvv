@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import SecurePayment from './SecurePayment';
-import { SecurityManager } from '../utils/security';
+import { AdminSecurity } from '../utils/adminSecurity';
 
 const InvestmentPayment = () => {
   const { tierName } = useParams();
@@ -71,7 +71,7 @@ const InvestmentPayment = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const sanitizedValue = SecurityManager.sanitizeInput(value);
+    const sanitizedValue = AdminSecurity.sanitizeInput(value);
     
     setFormData(prev => ({
       ...prev,
@@ -125,17 +125,17 @@ const InvestmentPayment = () => {
     e.preventDefault();
     
     // Validate form data
-    if (!SecurityManager.validateEmail(formData.email)) {
+    if (!AdminSecurity.validateEmail(formData.email)) {
       alert('Please enter a valid email address');
       return;
     }
 
-    if (formData.phone && !SecurityManager.validatePhone(formData.phone)) {
+    if (formData.phone && !AdminSecurity.validatePhone(formData.phone)) {
       alert('Please enter a valid phone number');
       return;
     }
 
-    if (!SecurityManager.validateAmount(formData.amount)) {
+    if (!AdminSecurity.validateAmount(formData.amount)) {
       alert('Please enter a valid investment amount');
       return;
     }

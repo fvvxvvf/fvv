@@ -4,7 +4,7 @@ import { ArrowLeft, ShoppingCart, CheckCircle, Package, Truck, AlertTriangle } f
 import Header from './Header';
 import Footer from './Footer';
 import SecurePayment from './SecurePayment';
-import { SecurityManager } from '../utils/security';
+import { AdminSecurity } from '../utils/adminSecurity';
 import { StockManager } from '../utils/stockManager';
 
 const Checkout = () => {
@@ -139,7 +139,7 @@ const Checkout = () => {
     const { name, value } = e.target;
     setShippingData(prev => ({
       ...prev,
-      [name]: SecurityManager.sanitizeInput(value)
+      [name]: AdminSecurity.sanitizeInput(value)
     }));
   };
 
@@ -147,12 +147,12 @@ const Checkout = () => {
     e.preventDefault();
     
     // Validate form data
-    if (!SecurityManager.validateEmail(shippingData.email)) {
+    if (!AdminSecurity.validateEmail(shippingData.email)) {
       alert('Please enter a valid email address');
       return;
     }
 
-    if (shippingData.phone && !SecurityManager.validatePhone(shippingData.phone)) {
+    if (shippingData.phone && !AdminSecurity.validatePhone(shippingData.phone)) {
       alert('Please enter a valid phone number');
       return;
     }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CreditCard, Shield, Lock, AlertTriangle, CheckCircle, Building, Copy, Check } from 'lucide-react';
-import { SecurityManager, PaymentSecurity } from '../utils/security';
+import { AdminSecurity, PaymentSecurity } from '../utils/adminSecurity';
 
 interface SecurePaymentProps {
   amount: number;
@@ -92,7 +92,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
       newErrors.accountHolder = 'Account holder name is required';
     }
 
-    if (!SecurityManager.validateIBAN(bankData.iban)) {
+    if (!AdminSecurity.validateIBAN(bankData.iban)) {
       newErrors.iban = 'Invalid IBAN format';
     }
 
@@ -121,7 +121,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
   };
 
   const processPayment = async () => {
-    if (!SecurityManager.checkRateLimit('payment')) {
+    if (!AdminSecurity.checkRateLimit('payment')) {
       alert('Too many payment attempts. Please wait 1 minute before trying again.');
       return;
     }
@@ -400,7 +400,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
             <input
               type="text"
               value={bankData.accountHolder}
-              onChange={(e) => setBankData(prev => ({ ...prev, accountHolder: SecurityManager.sanitizeInput(e.target.value) }))}
+              onChange={(e) => setBankData(prev => ({ ...prev, accountHolder: AdminSecurity.sanitizeInput(e.target.value) }))}
               placeholder="Your full name as it appears on your bank account"
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                 errors.accountHolder ? 'border-red-500' : 'border-gray-300'
@@ -456,7 +456,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
               <input
                 type="text"
                 value={bankData.bankName}
-                onChange={(e) => setBankData(prev => ({ ...prev, bankName: SecurityManager.sanitizeInput(e.target.value) }))}
+                onChange={(e) => setBankData(prev => ({ ...prev, bankName: AdminSecurity.sanitizeInput(e.target.value) }))}
                 placeholder="Banco Sabadell"
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                   errors.bankName ? 'border-red-500' : 'border-gray-300'
@@ -475,7 +475,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
             <input
               type="text"
               value={bankData.address}
-              onChange={(e) => setBankData(prev => ({ ...prev, address: SecurityManager.sanitizeInput(e.target.value) }))}
+              onChange={(e) => setBankData(prev => ({ ...prev, address: AdminSecurity.sanitizeInput(e.target.value) }))}
               placeholder="Street address"
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                 errors.address ? 'border-red-500' : 'border-gray-300'
@@ -494,7 +494,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
               <input
                 type="text"
                 value={bankData.city}
-                onChange={(e) => setBankData(prev => ({ ...prev, city: SecurityManager.sanitizeInput(e.target.value) }))}
+                onChange={(e) => setBankData(prev => ({ ...prev, city: AdminSecurity.sanitizeInput(e.target.value) }))}
                 placeholder="Madrid"
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                   errors.city ? 'border-red-500' : 'border-gray-300'
@@ -692,7 +692,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
             <input
               type="text"
               value={cardData.name}
-              onChange={(e) => setCardData(prev => ({ ...prev, name: SecurityManager.sanitizeInput(e.target.value) }))}
+              onChange={(e) => setCardData(prev => ({ ...prev, name: AdminSecurity.sanitizeInput(e.target.value) }))}
               placeholder="John Doe"
               className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors ${
                 errors.name ? 'border-red-500' : 'border-gray-300'
@@ -714,7 +714,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
                 <input
                   type="text"
                   value={cardData.address}
-                  onChange={(e) => setCardData(prev => ({ ...prev, address: SecurityManager.sanitizeInput(e.target.value) }))}
+                  onChange={(e) => setCardData(prev => ({ ...prev, address: AdminSecurity.sanitizeInput(e.target.value) }))}
                   placeholder="Street address"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors ${
                     errors.address ? 'border-red-500' : 'border-gray-300'
@@ -732,7 +732,7 @@ const SecurePayment = ({ amount, description, onSuccess, onCancel }: SecurePayme
                   <input
                     type="text"
                     value={cardData.city}
-                    onChange={(e) => setCardData(prev => ({ ...prev, city: SecurityManager.sanitizeInput(e.target.value) }))}
+                    onChange={(e) => setCardData(prev => ({ ...prev, city: AdminSecurity.sanitizeInput(e.target.value) }))}
                     placeholder="Madrid"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors ${
                       errors.city ? 'border-red-500' : 'border-gray-300'

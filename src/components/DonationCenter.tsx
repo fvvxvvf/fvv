@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Gift, Printer, Package, Euro, CreditCard, Send, CheckCircle } from 'lucide-react';
-import { SecurityManager } from '../utils/security';
+import { AdminSecurity } from '../utils/adminSecurity';
 import SecurePayment from './SecurePayment';
 
 const DonationCenter = () => {
@@ -41,17 +41,17 @@ const DonationCenter = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: SecurityManager.sanitizeInput(value)
+      [name]: AdminSecurity.sanitizeInput(value)
     }));
   };
 
   const handleMoneyDonation = () => {
-    if (!formData.amount || !SecurityManager.validateAmount(formData.amount)) {
+    if (!formData.amount || !AdminSecurity.validateAmount(formData.amount)) {
       alert('Please enter a valid donation amount');
       return;
     }
 
-    if (!SecurityManager.validateEmail(formData.email)) {
+    if (!AdminSecurity.validateEmail(formData.email)) {
       alert('Please enter a valid email address');
       return;
     }
@@ -62,7 +62,7 @@ const DonationCenter = () => {
   const handleEquipmentDonation = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!SecurityManager.validateEmail(formData.email)) {
+    if (!AdminSecurity.validateEmail(formData.email)) {
       alert('Please enter a valid email address');
       return;
     }

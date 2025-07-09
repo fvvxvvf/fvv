@@ -40,13 +40,16 @@ const Hero = () => {
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             From Residues to Resources
           </h1>
-          <p className="text-2xl md:text-3xl font-semibold mb-8" style={{color: '#FFFF00'}}>
-            Engineered for Action
+          <p className="text-2xl md:text-3xl font-semibold mb-4" style={{color: '#FFFF00'}}>
+            Currently in Development Stage
+          </p>
+          <p className="text-lg md:text-xl font-medium mb-8 text-gray-300">
+            Alpha Models Available for Early Supporters
           </p>
           <p className="text-xl text-gray-300 mb-12 leading-relaxed">
-            Revolutionary UAV technology built from recycled and repurposed materials. 
-            Proving that sustainable engineering can meet the demands of law enforcement, 
-            military, and civilian applications.
+            We're developing revolutionary UAV technology from recycled materials. 
+            Our alpha models (airplane, helicopter, and quadcopter surveillance drones) are available now.
+            <strong className="text-yellow-400"> Early buyers will receive the final production model for free as a thank you for supporting our mission!</strong>
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
