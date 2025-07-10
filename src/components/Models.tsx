@@ -129,7 +129,6 @@ const Models = () => {
               🎁 <strong>Special Offer:</strong> Alpha buyers will receive the final production model for FREE when it's released, 
               as our gift for supporting FV Drones during development!
             </p>
-          </p>
         </div>
 
         {/* Responsive grid: 1 col mobile, 2 cols tablet, 4 cols desktop */}
